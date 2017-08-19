@@ -14,45 +14,41 @@
  * limitations under the License.
  */
 
-package com.example.android.architecture.blueprints.todoapp.data.source.local;
+package com.example.android.architecture.blueprints.todoapp.data.source.local
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 
-public class TasksDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+class TasksDbHelper(context: Context)
+    : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    public static final String DATABASE_NAME = "Tasks.db";
+    override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL(SQL_CREATE_ENTRIES)
+    }
 
-    private static final String TEXT_TYPE = " TEXT";
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        // Not required as at version 1
+    }
 
-    private static final String BOOLEAN_TYPE = " INTEGER";
+    override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        // Not required as at version 1
+    }
 
-    private static final String COMMA_SEP = ",";
-
-    private static final String SQL_CREATE_ENTRIES =
+    private val TEXT_TYPE = " TEXT"
+    private val BOOLEAN_TYPE = " INTEGER"
+    private val COMMA_SEP = ","
+    private val SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TasksPersistenceContract.TaskEntry.TABLE_NAME + " (" +
                     TasksPersistenceContract.TaskEntry._ID + TEXT_TYPE + " PRIMARY KEY," +
                     TasksPersistenceContract.TaskEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
                     TasksPersistenceContract.TaskEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
                     TasksPersistenceContract.TaskEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                     TasksPersistenceContract.TaskEntry.COLUMN_NAME_COMPLETED + BOOLEAN_TYPE +
-            " )";
+                    " )"
 
-    public TasksDbHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
-    }
-
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Not required as at version 1
-    }
-
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Not required as at version 1
+    companion object {
+        val DATABASE_VERSION = 1
+        val DATABASE_NAME = "Tasks.db"
     }
 }
